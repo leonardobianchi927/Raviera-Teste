@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark light">
+<link rel="icon" href="logo.png">
+<script src="tema.js"></script>
+<title>RAVIERA GROUP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header><div class="wrap topo">
+  <img class="logo" src="logo.png" alt="Logo da RAVIERA GROUP" width="104" height="104">
+  <div class="titulo"><h1 id="nome"></h1><p id="slogan"></p><a class="btn" id="discord" hidden>Entrar no Discord</a></div>
+</div>
+<nav class="wrap menu" aria-label="Páginas"><a href="index.html" aria-current="page">Motoristas</a><a href="regras.html">Regras</a><button class="tema" id="tema" type="button"></button></nav></header>
+
+<main class="wrap">
+  <section class="totais" id="totais" aria-label="Totais da empresa"></section>
+  <div class="controles">
+    <input type="search" id="busca" placeholder="Buscar motorista ou caminhão" aria-label="Buscar motorista">
+    <select id="ordem" aria-label="Ordenar por">
+      <option value="km">Mais quilômetros</option>
+      <option value="entregas">Mais entregas</option>
+      <option value="ganhos">Maiores ganhos</option>
+      <option value="ganhosMes">Maiores ganhos do mês</option>
+      <option value="entrada">Mais antigos</option>
+      <option value="nome">Nome (A–Z)</option>
+    </select>
+    <select id="filtro" aria-label="Filtrar por status">
+      <option value="">Todos os status</option>
+      <option value="online">Online</option>
+      <option value="estrada">Na estrada</option>
+      <option value="folga">De folga</option>
+    </select>
+  </div>
+  <section class="lista" id="lista" aria-live="polite"></section>
+</main>
+<footer><div class="wrap">Dados editados em <code>motoristas.js</code> · valores em euros (€).</div></footer>
+
+<script src="motoristas.js"></script>
+<script>
+const STATUS={online:{t:"Online",c:"#3fbf7f"},estrada:{t:"Na estrada",c:"#ffb81f"},folga:{t:"De folga",c:"#6b7684"}};
+const $=id=>document.getElementById(id);
+const euro=n=>"€ "+Math.round(n||0).toLocaleString("pt-BR");
+const ini=n=>n.split(" ").filter(Boolean).slice(0,2).map(p=>p[0]).join("").toUpperCase();
+const avatar=m=>m.foto?`<img class="av" src="${esc(m.foto)}" alt="Foto de ${esc(m.nome)}" loading="lazy" data-ini="${esc(ini(m.nome))}" onerror="this.outerHTML='<span class=&quot;av&quot;>'+this.dataset.ini+'</span>'">`:`<span class="av" aria-hidden="true">${esc(ini(m.nome))}</span>`;
+const fmt=n=>n.toLocaleString("pt-BR");
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const patente=km=>[...PATENTES].reverse().find(p=>km>=p.min);
+const proxima=km=>PATENTES.find(p=>p.min>km);
+const data=d=>new Date(d+"T12:00:00").toLocaleDateString("pt-BR");
+
+document.title=EMPRESA.nome+" · Painel de motoristas";
+$("nome").textContent=EMPRESA.nome;
+$("slogan").textContent=EMPRESA.slogan;
+if(EMPRESA.discord){const a=$("discord");a.href=EMPRESA.discord;a.hidden=false;a.target="_blank";a.rel="noopener"}
+
+const somaKm=MOTORISTAS.reduce((s,m)=>s+m.km,0);
+const somaEnt=MOTORISTAS.reduce((s,m)=>s+m.entregas,0);
+const somaGan=MOTORISTAS.reduce((s,m)=>s+(m.ganhos||0),0);
+const ativos=MOTORISTAS.filter(m=>m.status!=="folga").length;
+$("totais").innerHTML=[
+  [MOTORISTAS.length,"motoristas"],[fmt(somaKm)+" km","percorridos"],
+  [fmt(somaEnt),"entregas"],[euro(somaGan),"ganhos totais"],[ativos,"ativos agora"]
+].map(([v,l])=>`<div><b>${v}</b><span>${l}</span></div>`).join("");
+
+function card(m,i){
+  const p=patente(m.km), nx=proxima(m.km), s=STATUS[m.status]||STATUS.folga;
+  const pct=nx?Math.round((m.km-p.min)/(nx.min-p.min)*100):100;
+  return `<article class="card" style="--cor:${p.cor}">
+    <button aria-expanded="false">
+      <span class="pos">${i+1}</span>${avatar(m)}
+      <span><span class="nome">${esc(m.nome)}${m.apelido?` <span class="sub">“${esc(m.apelido)}”</span>`:""}</span><br>
+        <span class="patente">${p.n}</span><span class="status" style="--s:${s.c}">${s.t}</span></span>
+      <span class="km"><b>${fmt(m.km)} km</b><small>${fmt(m.entregas)} entregas</small><small class="ganho">${euro(m.ganhos)}</small></span>
+    </button>
+    <div class="detalhe">
+      <dl class="grade">
+        <div><dt>Caminhão</dt><dd>${esc(m.caminhao)}</dd></div>
+        <div><dt>Carga favorita</dt><dd>${esc(m.cargaFavorita)}</dd></div>
+        <div><dt>Na empresa desde</dt><dd>${data(m.entrada)}</dd></div>
+        <div><dt>Ganhos totais</dt><dd class="ganho">${euro(m.ganhos)}</dd></div>
+        <div><dt>Ganhos no mês</dt><dd class="ganho">${euro(m.ganhosMes)}</dd></div>
+        <div><dt>Ganho por entrega</dt><dd>${m.entregas?euro(m.ganhos/m.entregas):"€ 0"}</dd></div>
+        <div><dt>Média por entrega</dt><dd>${m.entregas?fmt(Math.round(m.km/m.entregas)):0} km</dd></div>
+      </dl>
+      <div class="prog" role="progressbar" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100"><i style="width:${pct}%"></i></div>
+      <p class="proxima">${nx?`Faltam ${fmt(nx.min-m.km)} km para ${nx.n}`:"Patente máxima atingida"}</p>
+    </div>
+  </article>`;
+}
+
+function render(){
+  const q=$("busca").value.trim().toLowerCase(), f=$("filtro").value, o=$("ordem").value;
+  const ord={km:(a,b)=>b.km-a.km,entregas:(a,b)=>b.entregas-a.entregas,ganhos:(a,b)=>b.ganhos-a.ganhos,ganhosMes:(a,b)=>b.ganhosMes-a.ganhosMes,
+    entrada:(a,b)=>a.entrada.localeCompare(b.entrada),nome:(a,b)=>a.nome.localeCompare(b.nome,"pt")};
+  const rows=MOTORISTAS.filter(m=>(!f||m.status===f)&&
+    (`${m.nome} ${m.apelido} ${m.caminhao}`.toLowerCase().includes(q))).sort(ord[o]);
+  $("lista").innerHTML=rows.length?rows.map(card).join(""):
+    `<p class="vazio">Nenhum motorista encontrado. Limpe a busca ou troque o filtro de status.</p>`;
+}
+$("lista").addEventListener("click",e=>{
+  const b=e.target.closest(".card>button"); if(!b) return;
+  const c=b.parentElement, aberto=c.classList.toggle("aberto");
+  b.setAttribute("aria-expanded",aberto);
+});
+["busca","ordem","filtro"].forEach(id=>$(id).addEventListener("input",render));
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,93 @@
+:root{
+  color-scheme:dark;
+  --fundo:#0a0f0c; --painel:#121a15; --linha:#22332a; --texto:#eaf4ea; --suave:#9db3a3;
+  --destaque:#2fd12f; --sobre:#04210a; --brilho:#1f8f2f33; --cinza:#6b7d70;
+  --titulo:"Barlow Condensed","Arial Narrow",sans-serif;
+  --corpo:"Barlow",system-ui,sans-serif;
+}
+:root[data-theme="light"]{
+  color-scheme:light;
+  --fundo:#f1f7f1; --painel:#ffffff; --linha:#cfe0cf; --texto:#102016; --suave:#4f6657;
+  --destaque:#0b8f1c; --sobre:#ffffff; --brilho:#2fd12f22; --cinza:#8a9a8f;
+}
+*{box-sizing:border-box;margin:0}
+html{scroll-padding-top:1rem}
+body{background:var(--fundo);color:var(--texto);font:400 1rem/1.5 var(--corpo);min-height:100vh}
+.wrap{max-width:1080px;margin:0 auto;padding:0 1.25rem}
+
+/* ---------- topo ---------- */
+header{padding:2.25rem 0 1.5rem;border-bottom:6px solid var(--destaque);background:radial-gradient(800px 320px at 0 0,var(--brilho),transparent 70%),url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 160' fill='none' stroke='%2330c030' stroke-width='10' stroke-linecap='round' opacity='.16'%3E%3Cpath d='M20 150C90 80 190 50 290 40'/%3E%3Cpath d='M90 150C150 100 230 75 330 70'/%3E%3Cpath d='M170 150C220 115 280 100 380 100'/%3E%3C/svg%3E") right bottom/380px no-repeat}
+.topo{display:flex;flex-wrap:wrap;align-items:center;gap:1.5rem 2.5rem}
+.titulo h1{font:700 clamp(1.8rem,4vw,2.8rem)/1.05 var(--titulo)}
+.titulo p{color:var(--suave);margin-top:.35rem}
+.btn{display:inline-block;margin-top:.8rem;padding:.5rem 1rem;border-radius:6px;background:var(--destaque);color:var(--sobre);font-weight:600;text-decoration:none}
+.btn:hover{filter:brightness(1.08)}
+
+/* ---------- totais ---------- */
+.totais{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--linha);margin:1.75rem 0;border:1px solid var(--linha);border-radius:8px;overflow:hidden}
+.totais div{background:var(--painel);padding:1rem 1.1rem}
+.totais b{display:block;font:700 2rem/1.1 var(--titulo)}
+.totais span{color:var(--suave);font-size:.9rem}
+
+/* ---------- controles ---------- */
+.controles{display:flex;flex-wrap:wrap;gap:.75rem;margin-bottom:1.25rem}
+.controles input,.controles select{background:var(--painel);color:var(--texto);border:1px solid var(--linha);border-radius:6px;padding:.6rem .8rem;font:inherit}
+.controles input{flex:1 1 220px}
+:focus-visible{outline:3px solid var(--destaque);outline-offset:2px}
+
+/* ---------- motoristas ---------- */
+.lista{display:grid;gap:.75rem;padding-bottom:3rem}
+.card{background:var(--painel);border:1px solid var(--linha);border-left:6px solid var(--cor,var(--cinza));border-radius:8px}
+.card>button{all:unset;box-sizing:border-box;cursor:pointer;display:grid;grid-template-columns:auto auto 1fr auto;gap:.9rem;align-items:center;width:100%;padding:1rem 1.1rem}
+.card>button:focus-visible{outline:3px solid var(--destaque);outline-offset:-3px}
+.pos{font:700 1.8rem/1 var(--titulo);color:var(--suave);min-width:2.2rem;text-align:center}
+.nome{font:600 1.35rem/1.15 var(--titulo)}
+.sub{color:var(--suave);font-size:.9rem}
+.patente{display:inline-block;margin-right:.5rem;padding:0 .5rem;border-radius:4px;background:var(--cor);color:#0d1117;font-weight:600;font-size:.8rem}
+.km{text-align:right}
+.km b{font:700 1.6rem/1 var(--titulo)}
+.km small{display:block;color:var(--suave);font-size:.8rem}
+.status{display:inline-flex;align-items:center;gap:.35rem;font-size:.85rem;color:var(--suave)}
+.status::before{content:"";width:.6rem;height:.6rem;border-radius:50%;background:var(--s)}
+.detalhe{display:none;padding:0 1.1rem 1.1rem;border-top:1px solid var(--linha)}
+.card.aberto .detalhe{display:block}
+.grade{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:.9rem 1.5rem;padding:1rem 0}
+.grade dt{color:var(--suave);font-size:.8rem}
+.grade dd{font-weight:500}
+.prog{height:10px;border-radius:5px;background:var(--fundo);overflow:hidden}
+.prog i{display:block;height:100%;background:var(--cor)}
+.proxima{font-size:.85rem;color:var(--suave);margin-top:.4rem}
+.vazio{padding:2rem;text-align:center;color:var(--suave);border:1px dashed var(--linha);border-radius:8px}
+footer{border-top:2px solid var(--linha);padding:1.25rem 0;color:var(--suave);font-size:.85rem}
+@media(max-width:560px){
+  .card>button{grid-template-columns:auto auto 1fr}
+  .km{grid-column:2/4;text-align:left}
+}
+@media(prefers-reduced-motion:no-preference){.prog i{transition:width .5s}}
+/* ---------- fotos ---------- */
+.av{width:56px;height:56px;border-radius:50%;object-fit:cover;background:var(--fundo);border:3px solid var(--cor,var(--linha));display:flex;align-items:center;justify-content:center;font:700 1.3rem/1 var(--titulo);color:var(--texto);flex:none}
+.ganho{color:var(--destaque)!important;font-weight:600}
+/* ---------- menu e regras ---------- */
+.menu{display:flex;gap:.5rem;margin-top:1.5rem}
+.menu a{padding:.45rem 1rem;border-radius:6px;color:var(--suave);text-decoration:none;font:600 1.1rem/1 var(--titulo);border:1px solid var(--linha)}
+.menu a[aria-current]{background:var(--destaque);border-color:var(--destaque);color:var(--sobre)}
+.menu a:hover{color:var(--texto)}
+.regra{background:var(--painel);border:1px solid var(--linha);border-radius:8px;padding:1.25rem 1.4rem;margin-bottom:1rem}
+.regra h2{font:700 1.6rem/1.1 var(--titulo);margin-bottom:.7rem}
+.regra ol{padding-left:1.3rem;display:grid;gap:.5rem;max-width:70ch}
+.regra li::marker{color:var(--destaque);font-weight:600}
+table.pat{width:100%;border-collapse:collapse;max-width:520px}
+.pat th,.pat td{text-align:left;padding:.5rem .6rem;border-bottom:1px solid var(--linha)}
+.pat th{color:var(--suave);font-weight:500;font-size:.85rem}
+.pat i{display:inline-block;width:.8rem;height:.8rem;border-radius:50%;margin-right:.5rem;background:var(--cor)}
+
+/* ---------- logo e tema ---------- */
+.logo{width:104px;height:104px;border-radius:50%;flex:none;box-shadow:0 0 0 3px var(--fundo),0 0 0 6px var(--destaque),0 0 32px var(--brilho)}
+.titulo h1{letter-spacing:.04em}
+.menu{align-items:center}
+.tema{margin-left:auto;cursor:pointer;padding:.45rem 1rem;border-radius:6px;border:1px solid var(--destaque);background:transparent;color:var(--destaque);font:600 1.1rem/1 var(--titulo)}
+.tema:hover{background:var(--destaque);color:var(--sobre)}
+body{transition:background .25s,color .25s}
+.btn[hidden]{display:none}
+.tema{white-space:nowrap}
+@media(max-width:560px){.totais b{font-size:1.5rem}.logo{width:84px;height:84px}}

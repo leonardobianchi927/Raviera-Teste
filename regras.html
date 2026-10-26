@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark light">
+<link rel="icon" href="logo.png">
+<script src="tema.js"></script>
+<title>Regras · RAVIERA GROUP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header><div class="wrap topo">
+  <img class="logo" src="logo.png" alt="Logo da RAVIERA GROUP" width="104" height="104">
+  <div class="titulo"><h1 id="nome"></h1><p>Regras da empresa</p></div>
+</div>
+<nav class="wrap menu" aria-label="Páginas"><a href="index.html">Motoristas</a><a href="regras.html" aria-current="page">Regras</a><button class="tema" id="tema" type="button"></button></nav></header>
+<main class="wrap" style="padding-top:1.75rem;padding-bottom:3rem">
+  <div id="regras"></div>
+  <section class="regra"><h2>Patentes</h2>
+    <table class="pat"><thead><tr><th>Patente</th><th>A partir de</th></tr></thead><tbody id="pat"></tbody></table>
+  </section>
+</main>
+<script src="motoristas.js"></script>
+<script>
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+document.title="Regras · "+EMPRESA.nome;
+$("nome").textContent=EMPRESA.nome; $("regras").innerHTML=REGRAS.map(r=>`<section class="regra"><h2>${esc(r.titulo)}</h2><ol>${r.itens.map(i=>`<li>${esc(i)}</li>`).join("")}</ol></section>`).join("");
+$("pat").innerHTML=PATENTES.map(p=>`<tr style="--cor:${p.cor}"><td><i></i>${esc(p.n)}</td><td>${p.min.toLocaleString("pt-BR")} km</td></tr>`).join("");
+</script>
+</body>
+</html>
